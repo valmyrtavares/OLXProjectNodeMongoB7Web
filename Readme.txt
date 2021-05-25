@@ -1,1 +1,1 @@
-Feito uma tabela states com ela retonando
+Criasmos um middleware e colocamos nas rotas

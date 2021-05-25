@@ -5,7 +5,7 @@ module.exports = {
     addAction: async (req, res)=>{
 
     },
-    getAction: async (req, res)=>{
+    getList: async (req, res)=>{
 
     },
     getItem: async (req, res)=>{
