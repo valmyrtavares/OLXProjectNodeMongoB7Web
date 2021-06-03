@@ -5,6 +5,7 @@ const Auth = require('./middlewares/Auth')
 
 
 const AuthValidator = require('./validators/AuthValidators')
+const UserValidator = require('./validators/UserValidators')
 
 const AuthController = require('./controllers/AuthController')
 const UserController = require('./controllers/UserController')
@@ -17,7 +18,7 @@ router.get('/ping',(req, res)=>{
 router.get('/states', UserController.getStates);
 
 router.get('/user/me',Auth.private, UserController.info);
-router.put('/user/me',Auth.private, UserController.editAction);
+router.put('/user/me' ,UserValidator.editAction, Auth.private, UserController.editAction);
 
 router.post('/user/signin',AuthValidator.signin, AuthController.signin);
 router.post('/user/signup',AuthValidator.signup, AuthController.signup);

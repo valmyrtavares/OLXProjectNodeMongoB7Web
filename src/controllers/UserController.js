@@ -42,5 +42,7 @@ module.exports = {
     },
     editAction: async (req, res)=>{
 
+        res.json({})
+
     }
 }
