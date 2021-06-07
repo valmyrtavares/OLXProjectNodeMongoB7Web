@@ -1,3 +1,5 @@
-Agora será trazido todos os dados do usuário e todos os anuncios com todos os dados
-Uma atenção especial para a manobra de varias linhas substituidas por uma, eu fiquei com 
-dó de apagar tudo e deixei só a que está valendo e comentei as outras
+#14
+Alterando informações do usuário. E essa é a punultima aula da api e não tem previsão para o retorno
+Foi criado um novo validator que se chama UserValidator muito parecido com o anterior, eu ja´tinha notado que o curso estava 
+pequeno para a quantidade de features que ainda tinha que implemnetar aqui. Eu acho que com as coisas que já foram mostradas 
+da para fazer funcionar. Vamos ver. Vou fazer a próxima aula e dar o últmo comit

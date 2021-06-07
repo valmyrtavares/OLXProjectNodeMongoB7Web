@@ -1,3 +1,9 @@
+const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
+
+const { validationResult, matchedData } = require('express-validator')
+
+
 const State = require('../models/state')
 const User = require('../models/users')
 const Category = require('../models/category')
@@ -41,8 +47,49 @@ module.exports = {
         })
     },
     editAction: async (req, res)=>{
+        const errors = validationResult(req)
+        if(!errors.isEmpty()) {
+            res.json({error: errors.mapped()});
+            return;
+        }
+        const data = matchedData(req)
 
+        //const user = await User.findOne({token: data.token});
+
+        let updates = {};
+
+        if(data.name){
+            updates.name = data.name
+        }
+
+        if(data.email){
+            const emailCheck = await User.findOne({email: data.email})
+            if(emailCheck){
+                res.json({error: 'Email já existe não pode usar'})
+            }
+            updates.email = data.email;
+        }
+        
+        if(data.state){
+            if(mongoose.Types.ObjectId.isValid(data.state)){
+                const StateCheck = await State.findById(data.state);
+                if(!stateChck){
+                    res.json({error: 'Estado não cadastrado'});
+                    return;
+                }
+                updates.state = data.state;
+        
+            }else{
+                res.json({error: 'Código de estado inválido'});
+                    return;
+            }
+        }
+
+        if(data.password){
+            updates.passwordHash = await bcrypt.hash(data.password, 10)
+        }
+
+        await User.findOneAndUpdate({token: data.token}, {$set: updates});
         res.json({})
-
     }
 }
