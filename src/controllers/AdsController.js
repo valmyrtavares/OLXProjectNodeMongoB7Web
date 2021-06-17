@@ -30,6 +30,8 @@ module.exports = {
         res.json({categories})
 
     },
+
+
     addAction: async (req, res)=>{      
         let {title, price, priceneg, desc, cat, token} = req.body;
         const user = await User.findOne({token}).exec();
@@ -88,6 +90,9 @@ module.exports = {
         res.json({id: info._id});
 
     },
+
+
+
     getList: async (req, res)=>{
         let { sort = "asc", offset = 0, limit = 8, q, cat, state} = req.query;
         let filters = {status:true};
@@ -143,6 +148,9 @@ module.exports = {
         }
         res.json({ads, total})
     },
+
+
+
     getItem: async (req, res)=>{
         let{ id, other = null} = req.query;
 
@@ -173,6 +181,31 @@ module.exports = {
         let userInfo = await User.findById(ad.idUser).exec();
         let stateInfo = await StateModel.findById(ad.state).exec();
 
+        let others = [];
+        if(other){
+            const otherData = await Ad.find({status:true, idUser: ad.idUser}).exec();
+
+            for(let i in otherData){
+                if(otherData[i]._id.toString() != ad._id.toString()){
+
+                    let image = `${process.env.BASE}/media/default.jpg`;
+
+                    let defaultImg = otherData[i].images.find(e => e.defatul);
+                    if(defaultImg){
+                        image = `${process.env.DATA}/media/${defaultImg.url}`;
+                    }
+
+                    others.push({
+                        id:otherData[i]._id,
+                        title:otherData[i].title,
+                        price: otherData[i].price,
+                        priceNegotiable: otherData[i].priceNegotiable,
+                        image
+                    })
+                }
+            }
+        }
+
         res.json({
             id: ad._id,
             title: ad.title,
@@ -187,7 +220,8 @@ module.exports = {
                 name: userInfo.name,
                 email: userInfo.email,
             },
-            stateName: stateInfo.name
+            stateName: stateInfo.name,
+            others
         });
 
     },
