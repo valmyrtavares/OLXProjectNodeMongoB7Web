@@ -225,7 +225,60 @@ module.exports = {
         });
 
     },
-    editAction: async (req, res)=>{
 
-    },
+
+    editAction: async (req, res)=>{
+        let{id} = req.params;
+        let{title, status, price, priceneg, desc, cat, images, token} = req.body;
+
+        if(id.length < 12){
+            res.json({error: "ID inválido"})
+            return
+        }
+        const ad = await Ad.findById(id).exec();
+        if(!ad){
+            res.json({error: "Anuncio inexistente"})
+            return
+        }
+
+        const user = await User.findOne({token}).exec();
+        if(user._id.toString() !== ad.idUser){
+            res.json({error: 'Este anuncio não é seu'});
+            return
+        }
+
+        let updates = {};
+
+        if(title){
+            updates.title = title
+        }
+        if(price){
+            price = price.replace('.', '').replace('R$', '').replace(',','.');
+            price = parseFloat(price);
+            updates.price = price
+        }
+        if(priceneg){
+            updates.priceNegotiable = priceneg;
+        }
+        if(status){
+            updates.status = status
+        }
+        if(desc){
+            updates.desc = desc
+        }
+        if(cat){
+            const category = await Category.findOneAndDelete({slug: cat}).exec();
+            if(!category){
+                res.json({error: 'Categoria inexistente'})
+                return
+            }
+            updates.category = category._id.toString();
+        }
+
+        if(images){
+            updates.images = images;
+        }
+        await Ad.findByIdAndUpdate(id, {$set: updates});
+        res.json({error: ''});        
+    }
 }
